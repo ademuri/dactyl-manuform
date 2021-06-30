@@ -1311,8 +1311,8 @@
 ; Cutout for controller/trrs jack holder
 (def usb-holder-ref (key-position 0 0 (map - (wall-locate2  0  -1) [0 (/ mount-height 2) 0])))
 (def usb-holder-position (map + [(+ 18.8 holder-offset) 18.7 1.3] [(first usb-holder-ref) (second usb-holder-ref) 2]))
-(def usb-holder-space  (translate (map + usb-holder-position [-1.5 (* -1 wall-thickness) 2.9]) (cube 28.666 30 12.4)))
-(def usb-holder-notch  (translate (map + usb-holder-position [-1.5 (+ 4.4 notch-offset) 2.9]) (cube 31.366 1.3 12.4)))
+(def usb-holder-space  (translate (map + usb-holder-position [-1.5 (* -1 wall-thickness) 2.9]) (cube 28.666 30 22.4)))
+(def usb-holder-notch  (translate (map + usb-holder-position [-1.5 (+ 4.4 notch-offset) 2.9]) (cube 31.366 1.3 22.4)))
 (def trrs-notch        (translate (map + usb-holder-position [-10.33 (+ 3.6 notch-offset) 6.6]) (cube 8.4 2.4 19.8)))
 
 ; Screw insert definition & position
@@ -1373,24 +1373,28 @@
     (def screw-offset-tm [9.5 -4.5 0])
     (def screw-offset-bm [8 -1 0]))
 
+; Hole Diameter C: 5.5
+(def screw-insert-bottom-radius (/ 5.5 2))
+(def screw-insert-top-radius (/ 5.5 2))
+(def screw-post-radius (* screw-insert-bottom-radius 2))
+
          (defn screw-insert-all-shapes [bottom-radius top-radius height]
-  (union (screw-insert 0 0         bottom-radius top-radius height [8 10.5 0])
+  (union (screw-insert 0 0         bottom-radius top-radius height [(- screw-post-radius 1) (- 0.5 screw-post-radius) 0])
          (screw-insert 0 lastrow   bottom-radius top-radius height screw-offset-bl)
          (screw-insert lastcol lastrow  bottom-radius top-radius height screw-offset-br)
          (screw-insert lastcol 0         bottom-radius top-radius height screw-offset-tr)
          (screw-insert (+ 2 innercol-offset) 0         bottom-radius top-radius height screw-offset-tm)
          (screw-insert (+ 1 innercol-offset) lastrow         bottom-radius top-radius height screw-offset-bm)))
 
-; Hole Depth Y: 4.4
-(def screw-insert-height 6)
+; For McMaster M4 insert, https://www.mcmaster.com/94459A150/
+; Hole Depth Y: 8
+(def screw-insert-height 8)
 
-; Hole Diameter C: 4.1-4.4
-(def screw-insert-bottom-radius (/ 4.0 2))
-(def screw-insert-top-radius (/ 3.9 2))
 (def screw-insert-holes  (screw-insert-all-shapes screw-insert-bottom-radius screw-insert-top-radius screw-insert-height))
 
-; Wall Thickness W:\t1.65
-(def screw-insert-outers (screw-insert-all-shapes (+ screw-insert-bottom-radius 1.65) (+ screw-insert-top-radius 1.65) (+ screw-insert-height 1)))
+; Wall Thickness is twice the hole diameter, and 2mm above the screw hole
+(def screw-insert-outers (screw-insert-all-shapes (* screw-insert-bottom-radius 2) (* screw-insert-top-radius 2) (+ screw-insert-height 2)))
+; What is this for?
 (def screw-insert-screw-holes  (screw-insert-all-shapes 1.7 1.7 350))
 
 ; Connectors between outer column and right wall when 1.5u keys are used
@@ -1448,7 +1452,7 @@
                      (difference (union case-walls
                                         screw-insert-outers)
                                  usb-holder-space
-                                 trrs-notch
+                                 ;trrs-notch
                                  usb-holder-notch
                                  screw-insert-holes))
                    (translate [0 0 -20] (cube 350 350 40))))
