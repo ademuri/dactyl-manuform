@@ -1390,12 +1390,12 @@
 ; Hole Depth Y: 8
 (def screw-insert-height 8)
 
-(def screw-insert-holes  (screw-insert-all-shapes screw-insert-bottom-radius screw-insert-top-radius screw-insert-height))
+(def screw-insert-holes (translate [0 0 -0.01] (screw-insert-all-shapes screw-insert-bottom-radius screw-insert-top-radius (+ screw-insert-height 0.01))))
 
 ; Wall Thickness is twice the hole diameter, and 2mm above the screw hole
 (def screw-insert-outers (screw-insert-all-shapes (* screw-insert-bottom-radius 2) (* screw-insert-top-radius 2) (+ screw-insert-height 2)))
-; What is this for?
-(def screw-insert-screw-holes  (screw-insert-all-shapes 1.7 1.7 350))
+; Holes for the screws in the bottom plates
+(def screw-insert-screw-holes  (screw-insert-all-shapes 4.5 4.5 350))
 
 ; Connectors between outer column and right wall when 1.5u keys are used
 (def pinky-connectors
